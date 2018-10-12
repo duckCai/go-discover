@@ -1,34 +1,18 @@
-package cache
+package mcache
+
 import (
-    "sync"
+	"fmt"
+	"time"
+	"github.com/astaxie/beego/cache"
 )
 
-type MemoryCache struct {
-    lock  *sync.RWMutex	
-    items map[string]interface{}
+var AppCache cache.Cache
+
+func InitCache() {
+	fmt.Println("init cache cmpt");
+	var err error
+	AppCache, err = cache.NewCache("memory", `{"interval":-1}`)
+	AppCache.Put("AppList", "GO-Discover", 1000000*time.Hour)
+	fmt.Println("value----", err, AppCache.Get("test"))
 }
 
-// func(mc *MemoryCache) GetInstance()*MemoryCache{
-//     mc.lock.Lock()
-//     defer mc.lock.Unlock()
-  
-//     if MemoryCache==nil{
-//         MemoryCache=&MemoryCache{}
-//     }
-//     return MemoryCache
-// }
-
-func (mc *MemoryCache) Set(key string, value interface{}) error {
-    mc.lock.Lock()
-    defer mc.lock.Unlock()
-    mc.items[key] = value
-    return nil
-} 
-func (mc *MemoryCache) Get(key string) interface{} {
-    mc.lock.RLock()	
-    defer mc.lock.RUnlock() 	
-    if val, ok := mc.items[key]; ok {
-        return val
-    }
-    return nil
-}

@@ -2,8 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"fmt"
-	"github.com/astaxie/beego/cache"
+	"go-discover/cmpt/cache"
 )
 
 type MainController struct {
@@ -11,8 +10,26 @@ type MainController struct {
 }
 
 func (c *MainController) Get() {
-	bm, err := cache.NewCache("memory", `{"interval":-1}`)
-	fmt.Println("value----", err, bm.Get("test"))
-	c.Data["AppName"] = "Go-discover"
+	c.Data["AppName"] = mcache.AppCache.Get("AppName")
+	c.Data["RegApps"] = `{"interval":-1}`
 	c.TplName = "index.tpl"
+}
+
+func (this *MainController) RegisterApp() {
+	appName := this.GetString("appName")
+	if appName != "" {
+		var appList [50] string
+		mcache.AppCache.Put("AppName", appName, 90000)
+		this.Ctx.WriteString(appName + " register success!")
+		return 
+	} else {
+		this.Ctx.WriteString("register failure! appName is empty")
+		return
+	}
+}
+
+func (this *MainController) ListApp() {
+ 	appList := mcache.AppCache.Get("AppList")
+	this.Ctx.WriteString(appName + " register success!")
+	return 
 }

@@ -75,6 +75,9 @@
     <div class="keys">
        Test key: {{.AppName}}
     </div>
+    <div class="keys">
+       register app: {{.RegApps}}
+    </div>
   </header>
   <script src="/static/js/reload.min.js"></script>
 </body>
